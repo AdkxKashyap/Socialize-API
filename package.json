@@ -1,0 +1,25 @@
+{
+  "name": "socialize",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.12",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "validator": "^11.0.0"
+  },
+  "devDependencies": {
+    "env-cmd": "^9.0.2",
+    "nodemon": "^1.19.1"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "env-cmd --file ./config/dev.env nodemon index.js"
+  },
+  "author": "akash",
+  "license": "ISC"
+}
