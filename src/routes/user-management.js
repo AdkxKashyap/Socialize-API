@@ -1,7 +1,11 @@
 const express=require('express')
 const validator=require('validator')
+const multer=require('multer')
+const sharp=require('sharp')
 const USER=require('../models/user')
 const FRIENDS=require("../models/friends")//friends db
+const GetAllFriendsService=require("../services/getAllFriendsOfUser")
+const postalPINService=require("../services/postalPINService")
 const EventsUpdates=require("../models/updates")//events db
 const auth=require('../middleware/auth')
 const router=new express.Router()
@@ -10,7 +14,55 @@ router.post('/socializeAPI/v1.0/signup',async(req,res)=>{
     const user=new USER(req.body)
     try {
         const token=await user.generateToken()
-        res.status(201).send({user,token})
+        res.status(201).send("{user,token}")
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
+//Upload profile pics(optional)
+//using multer 
+const uploadProfile=multer({
+    limits:{
+        fieldSize:2000000
+    }
+    
+})
+
+router.post('/socializeAPI/v1.0/avatar',uploadProfile.single('avatar'),auth,async(req,res)=>{
+    try {
+        const buffData=await sharp(req.file.buffer).resize({width:250,height:250}).png().toBuffer()
+        req.user.avatar=buffData
+        const user=new USER(req.user)
+        await user.save()
+        res.status(201).send(user)
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+    
+},(error,req,res,next)=>{
+    res.status(400).send(error.message)
+})
+//get profile pic of an user
+router.get('/socializeAPI/v1.0/avatar/:username',auth,async(req,res)=>{
+    try {
+        const user=await USER.findOne({username:req.params.username})
+        if(!user.avatar){
+            throw new Error("User does not have a profile picture")
+        }
+        // res.set('Content-Type','image/png')
+        res.status(200).send(user.avatar)    
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+    
+})
+//delete profile picture
+router.delete('/socializeAPI/v1.0/avatar',auth,async(req,res)=>{
+    try {
+        req.user.avatar=undefined
+        await req.user.save()
+        res.status(200).send()
     } catch (error) {
         res.status(500).send(error.message)
     }
@@ -82,7 +134,7 @@ router.get('/socializeAPI/v1.0/user/:username',auth,async (req,res)=>{
         res.status(500).send(error.message)
     }
 })
-
+//show current user's profile
 router.get('/socializeAPI/v1.0/me',auth,(req,res)=>{
     res.status(200).send(req.user)
 })
@@ -131,12 +183,34 @@ router.patch("/socializeAPI/v1.0/update/username",auth,async(req,res)=>{
 
 //shows all friends of user 
 router.get('/socializeAPI/v1.0/getAllFriends',auth,async(req,res)=>{    
+    const me=req.user.username
     
     try {   
-        const user= await USER.find({})
-        res.status(200).send(user)
+        
+        const friends=await GetAllFriendsService(me)
+        console.log(friends)
+        res.status(200).send(friends)
+        
     } catch (error) {
         res.status(500).send(error.message)
     }
 })
+//add address
+router.post('/socializeAPI/v1.0/addAddress',auth,async(req,res)=>{
+    const username=req.user.username
+    try {
+        
+        const user=await USER.findOne({username})
+        const address=req.body
+        const isValid=await postalPINService.validatePIN(address.pincode)
+        if(!isValid){
+            res.status(400).send("Invalid PIN")
+        }        
+        
+        res.status(200).send(user._id)
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
+
 module.exports=router

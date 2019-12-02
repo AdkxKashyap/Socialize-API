@@ -3,7 +3,7 @@ const router = new express.Router();
 const auth = require("../middleware/auth");
 const UserUpdates = require("../models/updates");//EventUpdates DB
 const Friends=require("../models/friends")
-const USER = require("../models/user");
+
 
 router.post(
   "/socializeAPI/v1.0/eventUpdates/:username/:type",
@@ -19,8 +19,8 @@ router.post(
         updateSrc:me
       });
       await userUpdates.save()
-      console.log(userUpdates)
-      console.log(me)
+      // console.log(userUpdates)
+      // console.log(me)
       res.status(201).send(userUpdates)
     } catch (error) {
         res.status(500).send(error.message)
@@ -84,6 +84,7 @@ router.get("/socializeAPI/v1.0/eventUpdates/friendRequest/:eventId",auth,async(r
           }
         })
         req.user.friendsCount+=1
+        //update friendCount of other user
         await req.user.save()
         await friends.save()
         await UserUpdates.updateOne({_id:eventId},{seen:true})

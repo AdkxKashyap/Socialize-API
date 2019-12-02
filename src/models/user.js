@@ -2,8 +2,6 @@ const mongoose=require('mongoose');
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 const validator=require('validator')
-const Friends=require('../models/friends')
-const EventUpdates=require('../models/updates')
 const Schema=mongoose.Schema;
 
 const tokenSchema=new Schema({
@@ -12,7 +10,36 @@ const tokenSchema=new Schema({
             
     }
 })
-
+const addressSchema=new Schema({
+    address:{
+        type:{
+            //permanent address,office,home addr etc...
+            type:String,
+            required:true
+        },
+        pincode:{
+            type:Number,
+            required:true
+        },
+        state:{
+            type:String,
+            required:true
+        },
+        city:{
+            type:String,
+            required:true
+        },
+        street:{
+            type:String,
+            required:true
+        },
+        landmark:{
+            //buildings,apartments etc
+            type:String,
+            required:true
+        }
+    }
+})
 const userSchema=new Schema({
     name:{
         type:String,
@@ -23,6 +50,9 @@ const userSchema=new Schema({
         unique:true,
         trim:true,
         required:true
+    },
+    avatar:{
+        type:Buffer
     },
     age:{
         type:Number,
@@ -43,6 +73,14 @@ const userSchema=new Schema({
             }
         }
     },
+    birthday:{
+        type:Date,
+         required:true
+    },
+    profession:{
+        type:String,
+         required:true
+    },
     password:{
         type:String,
         required:true,
@@ -60,7 +98,19 @@ const userSchema=new Schema({
     friendsCount:{
         type:Number,
         default:0
-    }   
+    },
+    //these are secondary reqirements which the user can fill in at a later time
+    hobbies:[
+        {
+        hobby:{
+            type:String,
+            required:false
+        }
+    }
+    ],
+    addresses:[
+        addressSchema
+    ]   
 },{
     timestamps:true
 })
@@ -69,6 +119,7 @@ userSchema.methods.toJSON=function(){
     const userObject=this.toObject()
     delete userObject.password
     delete userObject.tokens
+    delete userObject.avatar
     return userObject
 }
 
@@ -78,6 +129,10 @@ userSchema.pre('save',async function(next){
     if(user.isModified('password')){
         user.password= await bcrypt.hash(user.password,8)
     }
+
+    //validating pin
+
+
 })
 
 //validating password and username/email
@@ -95,7 +150,7 @@ userSchema.statics.validateCredentials=async(email,username,password)=>{
     }
     const isMatch=bcrypt.compare(password,user.password)
     if(!isMatch){
-        throw new Error('Unable to login')
+        throw new Error('Incorrect Password')
     }
     return user
 }
