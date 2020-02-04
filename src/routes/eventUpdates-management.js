@@ -10,6 +10,7 @@ router.post(
   auth,
   async (req, res) => {
     try {
+      console.log(req.user)
       const username = req.params.username;
       const me = req.user.username;
 
@@ -18,12 +19,15 @@ router.post(
         updateTo: username,
         updateSrc:me
       });
+      // console.log(req.user)
+      console.log(userUpdates)
       await userUpdates.save()
       // console.log(userUpdates)
       // console.log(me)
       res.status(201).send(userUpdates)
     } catch (error) {
-        res.status(500).send(error.message)
+      console.log(error.message)
+        res.status(500).send({error:error.message})
     }
   }
 );

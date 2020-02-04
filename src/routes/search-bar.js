@@ -11,8 +11,8 @@ router.get('/socializeAPI/v1.0/search',auth,async(req,res)=>{
         data.forEach((user)=>{
             map.set(user.name,user.username)
         })
-        console.log([...map])
-        console.log(JSON.stringify([...map]))
+        // console.log([...map])
+        // console.log(JSON.stringify([...map]))
         res.status(200).send(JSON.stringify([...map]))
     }).catch((err)=>{
         res.status(500).send(err.message)

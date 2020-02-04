@@ -6,8 +6,10 @@ const handleEventsUpdate=require('./src/middleware/handleUpdates')
 const uploadUserPosts=require('./src/routes/userPosts-management')
 const commentsRouter=require('./src/routes/comments-management')
 const searchRouter=require('./src/routes/search-bar')
+const cors=require('cors')
 
 const app=express()
+app.use(cors())
 const port=process.env.PORT
 
 app.use(express.json())
