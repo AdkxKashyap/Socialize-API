@@ -6,11 +6,6 @@ const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
   address: {
-    type: {
-      //permanent address,office,home addr etc...
-      type: String,
-      required: true
-    },
     pincode: {
       type: Number,
       required: true
@@ -20,15 +15,6 @@ const addressSchema = new Schema({
       required: true
     },
     city: {
-      type: String,
-      required: true
-    },
-    street: {
-      type: String,
-      required: true
-    },
-    landmark: {
-      //buildings,apartments etc
       type: String,
       required: true
     }
@@ -108,7 +94,7 @@ const userSchema = new Schema(
         required: true
       }
     ],
-    addresses: [addressSchema]
+    address: addressSchema
   },
   {
     timestamps: true

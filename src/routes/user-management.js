@@ -72,14 +72,6 @@ router.post(
   }
 );
 
-// router.post("socializeAPI/v1.0/userManagement/signup/google",async(req,res)=>{
-//   try {
-//     const token=req.
-//   } catch (error) {
-
-//   }
-// })
-
 //google auth check existing user
 //check uniqueness using email of user.
 router.post(
