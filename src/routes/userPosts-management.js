@@ -26,9 +26,10 @@ const modifyImage=async(imageBuffer)=>{
     
 }
 
-const uploadFieldNames=uploadImages.fields([{name:'image_post',maxCount:5}])
+const uploadFieldNames=uploadImages.fields([{name:'imageData',maxCount:5}])
 router.post('/socializeAPI/v1.0/uploadPost',uploadFieldNames,auth,async(req,res)=>{
-    const images=req.files.image_post
+    const images=req.files.imageData
+    
     try {
         req.body.username=req.user.username
         const userPost=new USER_POSTS(req.body)//req.body holds the text fields
@@ -48,6 +49,7 @@ router.post('/socializeAPI/v1.0/uploadPost',uploadFieldNames,auth,async(req,res)
                 const imageBufferData=imageData.buffer
                 const imageBuffer=await modifyImage(imageBufferData)
                 userPost.imageData.push({imageBuffer})//the name of the field in the schema needs to be same with the variable name containing the data that need to be added
+             
             })
         }
 
@@ -127,7 +129,6 @@ router.patch('/socializeAPI/v1.0/updatePost/:postId',auth,async(req,res)=>{
         updates.forEach((update)=>{
             post[update]=req.body[update]
         })
-        console.log(post)
         await post.save()
         res.status(200).send(post._id)
     } catch (error) {

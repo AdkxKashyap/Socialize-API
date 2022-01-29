@@ -24,13 +24,13 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true
+      // required: true
     },
     username: {
       type: String,
       unique: true,
       trim: true,
-      required: true
+      // required: true
     },
     avatar: {
       type: Buffer
@@ -131,7 +131,8 @@ userSchema.statics.validateCredentials = async (email, username, password) => {
   if (!user) {
     throw new Error("User not found");
   }
-  const isMatch = bcrypt.compare(password, user.password);
+ 
+  const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new Error("Incorrect Password");
   }

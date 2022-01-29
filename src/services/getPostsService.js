@@ -4,7 +4,7 @@ const GetAllFriendsService=require("./getAllFriendsOfUser")
 const getPostsOfUsers=async function(username,limit,skip){
     try {
         const posts= await USER_POSTS.find({username:username}).limit(limit).skip(skip).sort({createdAt:-1})//limit:no of objects to be sent.skip:no.of objects to be skipped by the cursor
-        // console.log(posts[0])
+      
         return posts
     } catch (error) {
         return error.message
@@ -55,15 +55,14 @@ const getPostsOfParticularUser=async(myUsername,otherUsername,limit,skip)=>{
                                                     .or([{visibility:"public"},{visibility:"friends"}])
                                                     .sort({createdAt:'desc'})
                                                     .limit(limit).skip(skip)
-            console.log(query1)
-            console.log('1')
+           
             return query1
         }
         else{
             const query=await USER_POSTS.find().and([{username:otherUsername},{visibility:"public"},{excludedFriends:{$ne:myUsername}}])
                                                 .sort({createdAt:'desc'})
                                                 .limit(limit).skip(skip)
-                                                console.log('2')
+                                               
             return query
         }
        

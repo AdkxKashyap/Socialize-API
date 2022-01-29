@@ -35,7 +35,6 @@ router.post("/socializeAPI/v1.0/userManagement/signup", async (req, res) => {
       res.status(201).send({ token: token, message: message });
     }
   } catch (error) {
-    console.log(error.message);
     res.status(500).send({ error: error.message });
   }
 });
@@ -54,7 +53,6 @@ router.post(
   auth,
   async (req, res) => {
     try {
-      console.log(req);
       const buffData = await sharp(req.file.buffer)
         .resize({ width: 360, height: 360 }) //only for profile
         .png()
@@ -99,7 +97,7 @@ router.post(
       }
       // res.send("ok")
     } catch (error) {
-      console.log({ error: error.message });
+   
       res.status(500).send({ error: error.message });
     }
   }
@@ -109,7 +107,7 @@ router.get(
   "/socializeAPI/v1.0/userManagement/getAllUsernames",
   async (req, res) => {
     try {
-      const usernames = await GetAllUsername();
+      const usernames = await GetAllUsername.getAllUsernames();
       res.status(200).send(usernames);
     } catch (error) {
       res.status(500).send({ error: error.message });
@@ -155,8 +153,9 @@ router.delete("/socializeAPI/v1.0/avatar", auth, async (req, res) => {
   }
 });
 //Default login
-router.get("/socializeAPI/v1.0/login", async (req, res) => {
+router.post("/socializeAPI/v1.0/login", async (req, res) => {
   try {
+   
     if (validator.isEmail(req.body.username)) {
       const user = await USER.validateCredentials(
         req.body.username,
@@ -167,6 +166,7 @@ router.get("/socializeAPI/v1.0/login", async (req, res) => {
 
       res.status(200).send({ user, token });
     } else {
+     
       const user = await USER.validateCredentials(
         null,
         req.body.username,
@@ -233,6 +233,7 @@ router.get("/socializeAPI/v1.0/user/:username", auth, async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+
 //show current user's profile
 router.get("/socializeAPI/v1.0/me", auth, (req, res) => {
   res.status(200).send(req.user);
