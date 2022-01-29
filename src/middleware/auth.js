@@ -7,11 +7,11 @@ const authMiddleware = async function(req, res, next) {
   // console.log("out1")
 
   if (req.query.userAuthProvider === "googleAuth") {
-    // console.log("google Auth")
+
     try {
       const token = req.header("Authorization").replace("Bearer ", "");
       const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-      //  console.log(token)
+
 
       const ticket = await client.verifyIdToken({
         idToken: token,
@@ -25,7 +25,6 @@ const authMiddleware = async function(req, res, next) {
       if (!user) {
         throw new Error();
       }
-      console.log(user);
       req.user = user;
       req.body.token = token;
       next();
