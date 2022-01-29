@@ -6,11 +6,6 @@ const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
   address: {
-    type: {
-      //permanent address,office,home addr etc...
-      type: String,
-      required: true
-    },
     pincode: {
       type: Number,
       required: true
@@ -22,15 +17,6 @@ const addressSchema = new Schema({
     city: {
       type: String,
       required: true
-    },
-    street: {
-      type: String,
-      required: true
-    },
-    landmark: {
-      //buildings,apartments etc
-      type: String,
-      required: true
     }
   }
 });
@@ -38,13 +24,13 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true
+      // required: true
     },
     username: {
       type: String,
       unique: true,
       trim: true,
-      required: true
+      // required: true
     },
     avatar: {
       type: Buffer
@@ -108,7 +94,7 @@ const userSchema = new Schema(
         required: true
       }
     ],
-    addresses: [addressSchema]
+    address: addressSchema
   },
   {
     timestamps: true
@@ -145,7 +131,8 @@ userSchema.statics.validateCredentials = async (email, username, password) => {
   if (!user) {
     throw new Error("User not found");
   }
-  const isMatch = bcrypt.compare(password, user.password);
+ 
+  const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new Error("Incorrect Password");
   }
