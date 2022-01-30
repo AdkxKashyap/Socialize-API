@@ -1,5 +1,5 @@
 const rp=require('request-promise')
-const asyncForEach=require('../services/asyncForEach')
+const asyncForEach=require('./asyncForEach')
 const getPIN_Data=async(code)=>{
     const uri="https://api.postalpincode.in/pincode/"+code
     try {

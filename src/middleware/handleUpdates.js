@@ -1,6 +1,6 @@
 const express=require('express')
 const router=new express.Router()
-const auth=require("../middleware/auth")
+const auth=require("./auth")
 
 router.get("/socializeAPI/v1.0/eventUpdates/eventType/:eventId",auth,(req,res)=>{
     const eventType=req.query.eventType
