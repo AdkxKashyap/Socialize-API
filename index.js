@@ -11,8 +11,8 @@ const commentsRouter=require('./src/routes/comments-management')
 const searchRouter=require('./src/routes/search-bar')
 const cors=require('cors')
 
-
-const app=express()
+try {
+    const app=express()
 app.use(cors())
 const port=process.env.PORT
 
@@ -25,8 +25,12 @@ app.use(uploadUserPosts)
 app.use(commentsRouter)
 app.use(searchRouter)
 app.listen(port,()=>{
-    console.log("Server Running On Port",port)
+    // console.log("Server Running On Port",port)
 })
+} catch (error) {
+   console.log(error);
+}
+
 
 // no need for `app.listen()` on Deta, we run the app automatically.
 // module.exports = app; // make sure to export your `app` instance.
