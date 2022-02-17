@@ -25,12 +25,8 @@ app.use(uploadUserPosts)
 app.use(commentsRouter)
 app.use(searchRouter)
 app.listen(port,()=>{
-    // console.log("Server Running On Port",port)
+    console.log("Server Running On Port",port)
 })
 } catch (error) {
    console.log(error);
 }
-
-
-// no need for `app.listen()` on Deta, we run the app automatically.
-// module.exports = app; // make sure to export your `app` instance.
